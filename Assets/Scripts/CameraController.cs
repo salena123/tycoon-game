@@ -4,24 +4,50 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform target;            // Объект, за которым следует камера
-    public float distance = 10f;        // Расстояние по Z (вперед/назад)
-    public float height = 4f;           // Расстояние по Y (вверх/вниз)
-    public float rotationSpeed = 100f;  // Скорость вращения камеры
+    public Transform target;                // Объект, за которым следует камера
+    public float distance = 10f;            // Желаемое расстояние от цели
+    public float height = 2f;               // Высота, на которую направлен взгляд камеры
+    public float rotationSpeed = 5f;        // Скорость вращения мышью
+    public float minVerticalAngle = -30f;   // Минимальный угол камеры вниз
+    public float maxVerticalAngle = 60f;    // Максимальный угол камеры вверх
+    public LayerMask collisionMask;         // Слоёв, которые считаются препятствиями
 
-    private float currentRotation;
+    private float yaw = 0f;                 // Горизонтальный угол
+    private float pitch = 20f;              // Вертикальный угол
+
+    void Start()
+    {
+        
+    }
 
     void Update()
     {
-        
-        currentRotation += Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-        Quaternion rotation = Quaternion.Euler(0, currentRotation, 0);
+        HandleCameraRotation();
+        HandleCameraPosition();
+    }
 
-        
-        Vector3 offset = rotation * new Vector3(0, 0, -distance); 
-        offset.y += height; 
+    void HandleCameraRotation()
+    {
+        yaw += Input.GetAxis("Mouse X") * rotationSpeed;
+        pitch -= Input.GetAxis("Mouse Y") * rotationSpeed;
+        pitch = Mathf.Clamp(pitch, minVerticalAngle, maxVerticalAngle);
+    }
 
-        transform.position = target.position + offset;
-        transform.LookAt(target);
+    void HandleCameraPosition()
+    {
+        Quaternion rotation = Quaternion.Euler(pitch, yaw, 0);
+        Vector3 desiredCameraPos = target.position + rotation * new Vector3(0, 0, -distance);
+        Vector3 lookTarget = target.position + Vector3.up * height;
+
+        // Луч от цели к предполагаемой позиции камеры
+        RaycastHit hit;
+        if (Physics.Linecast(lookTarget, desiredCameraPos, out hit, collisionMask))
+        {
+            // Если есть препятствие — перемещаем камеру к точке столкновения
+            desiredCameraPos = hit.point + hit.normal * 0.3f; // немного отступаем от поверхности
+        }
+
+        transform.position = desiredCameraPos;
+        transform.LookAt(lookTarget);
     }
 }

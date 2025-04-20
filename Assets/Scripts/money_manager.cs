@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class money_manager : MonoBehaviour
+public class MoneyManager : MonoBehaviour
 {
     public static int money = 0;
     public float earnInterval = 1f;
@@ -15,16 +15,10 @@ public class money_manager : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer>=earnInterval)
-        {
-            money += 1;
-            timer = 0f;
-        }
 
         moneyText.text = "Δενόγθ: " + money.ToString();
     }
+
 }

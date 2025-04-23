@@ -28,9 +28,12 @@ public class CameraController : MonoBehaviour
 
     void HandleCameraRotation()
     {
-        yaw += Input.GetAxis("Mouse X") * rotationSpeed;
-        pitch -= Input.GetAxis("Mouse Y") * rotationSpeed;
-        pitch = Mathf.Clamp(pitch, minVerticalAngle, maxVerticalAngle);
+        if (Input.GetMouseButton(1))
+        {
+            yaw += Input.GetAxis("Mouse X") * rotationSpeed;
+            pitch -= Input.GetAxis("Mouse Y") * rotationSpeed;
+            pitch = Mathf.Clamp(pitch, minVerticalAngle, maxVerticalAngle);
+        }
     }
 
     void HandleCameraPosition()

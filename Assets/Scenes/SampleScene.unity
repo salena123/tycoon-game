@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 14723977}
   - component: {fileID: 14723979}
   - component: {fileID: 14723978}
-  - component: {fileID: 14723980}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -257,20 +256,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14723976}
   m_CullTransparentMesh: 1
---- !u!114 &14723980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 14723976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec890c4f3403e52479a178b555e71cd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  earnInterval: 1
-  moneyText: {fileID: 14723978}
 --- !u!1 &102967754
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3840fd0b76a3b48924f8907d77f254, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropZone: {fileID: 1464960713}
+  dropZones: []
 --- !u!65 &427754339
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -705,8 +690,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 576707529eef0b84995fd33b5096797c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropZone: {fileID: 1464960713}
-  moneyText: {fileID: 777618325}
+  dropZones: []
+  moneyText: {fileID: 0}
 --- !u!114 &427754344
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,14 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class MoneyDisplay : MonoBehaviour
 {
-    public MoneyDropZone dropZone;
-    public Text moneyText; // если TMP, замени на: public TMP_Text moneyText;
+    public MoneyDropZone[] dropZones;
+    public TMP_Text moneyText;
 
     void Update()
     {
-        moneyText.text = dropZone.moneyInZone.ToString();
+        int total = 0;
+
+        foreach (MoneyDropZone zone in dropZones)
+        {
+            if (zone != null)
+                total += zone.moneyInZone;
+        }
+
+        moneyText.text = total.ToString();
     }
 }

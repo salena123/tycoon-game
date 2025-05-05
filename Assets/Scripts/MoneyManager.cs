@@ -6,19 +6,29 @@ using UnityEngine;
 public class MoneyManager : MonoBehaviour
 {
     public static int money = 0;
-    public float earnInterval = 1f;
-    private float timer = 0f;
     public TMP_Text moneyText;
 
     void Start()
     {
-        
+        money = PlayerPrefs.GetInt("Money", 0);
+        UpdateUI();
     }
 
     void Update()
     {
-
-        moneyText.text = "Δενόγθ: " + money.ToString();
+        UpdateUI();
     }
 
+    void UpdateUI()
+    {
+        if (moneyText != null)
+            moneyText.text = "Δενόγθ: " + money.ToString();
+    }
+
+    public static void AddMoney(int amount)
+    {
+        money += amount;
+        PlayerPrefs.SetInt("Money", money);
+        PlayerPrefs.Save();
+    }
 }

@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     void Update()
@@ -52,5 +52,12 @@ public class CameraController : MonoBehaviour
 
         transform.position = desiredCameraPos;
         transform.LookAt(lookTarget);
+    }
+
+    public void ResetProgress()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        Debug.Log("Прогресс сброшен!");
     }
 }

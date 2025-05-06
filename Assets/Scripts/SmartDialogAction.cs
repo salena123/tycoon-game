@@ -65,12 +65,7 @@ public class SmartDialogAction : MonoBehaviour
 
     void PerformAction()
     {
-        // Удаление объекта
-        if (objectToDestroy != null)
-        {
-            Destroy(objectToDestroy);
-            PlayerPrefs.SetInt(ObjectDestroyedKey, 1);
-        }
+       
 
         // Включение объектов
         for (int i = 0; i < objectsToEnable.Length; i++)
@@ -82,15 +77,6 @@ public class SmartDialogAction : MonoBehaviour
             }
         }
 
-        // Поворот объектов
-        for (int i = 0; i < rotatingObjects.Length && i < targetEulerRotations.Length; i++)
-        {
-            if (rotatingObjects[i] != null)
-            {
-                rotatingObjects[i].transform.rotation = Quaternion.Euler(targetEulerRotations[i]);
-                PlayerPrefs.SetInt(ObjectRotatedPrefix + i, 1);
-            }
-        }
 
         // Отметить, что диалог пройден
         PlayerPrefs.SetInt(DialogPlayedKey, 1);
@@ -109,23 +95,8 @@ public class SmartDialogAction : MonoBehaviour
             }
         }
 
-        // Восстановить повороты
-        for (int i = 0; i < rotatingObjects.Length && i < targetEulerRotations.Length; i++)
-        {
-            if (rotatingObjects[i] != null)
-            {
-                int rotated = PlayerPrefs.GetInt(ObjectRotatedPrefix + i, 0);
-                if (rotated == 1)
-                {
-                    rotatingObjects[i].transform.rotation = Quaternion.Euler(targetEulerRotations[i]);
-                }
-            }
-        }
+       
 
-        // Удалить объект, если он уже уничтожен
-        if (PlayerPrefs.GetInt(ObjectDestroyedKey, 0) == 1 && objectToDestroy != null)
-        {
-            Destroy(objectToDestroy);
-        }
+       
     }
 }

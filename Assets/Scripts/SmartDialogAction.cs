@@ -21,6 +21,7 @@ public class SmartDialogAction : MonoBehaviour
     public float rotationSpeed = 90f;
 
     private int currentLine = 0;
+    private bool dialogStarted = false;
 
     // Ключи для сохранения
     private const string DialogPlayedKey = "SmartDialog_Played";
@@ -32,16 +33,22 @@ public class SmartDialogAction : MonoBehaviour
     {
         if (PlayerPrefs.GetInt(DialogPlayedKey, 0) == 1)
         {
-            // Диалог уже был — восстановить состояние
             RestoreState();
             Destroy(gameObject); // Удалить триггер
-            return;
         }
+    }
 
-        // Показываем диалог, если он ещё не был проигран
-        dialogCanvas.SetActive(true);
-        continueButton.gameObject.SetActive(false);
-        StartCoroutine(PlayDialog());
+    private void OnTriggerEnter(Collider other)
+    {
+        if (dialogStarted || PlayerPrefs.GetInt(DialogPlayedKey, 0) == 1) return;
+
+        if (other.CompareTag("Player"))
+        {
+            dialogStarted = true;
+            dialogCanvas.SetActive(true);
+            continueButton.gameObject.SetActive(false);
+            StartCoroutine(PlayDialog());
+        }
     }
 
     IEnumerator PlayDialog()
@@ -60,13 +67,12 @@ public class SmartDialogAction : MonoBehaviour
         {
             PerformAction();
             dialogCanvas.SetActive(false);
+            Destroy(gameObject); // Удаляем триггер после завершения
         });
     }
 
     void PerformAction()
     {
-       
-
         // Включение объектов
         for (int i = 0; i < objectsToEnable.Length; i++)
         {
@@ -77,15 +83,12 @@ public class SmartDialogAction : MonoBehaviour
             }
         }
 
-
-        // Отметить, что диалог пройден
         PlayerPrefs.SetInt(DialogPlayedKey, 1);
         PlayerPrefs.Save();
     }
 
     void RestoreState()
     {
-        // Восстановить включённые объекты
         for (int i = 0; i < objectsToEnable.Length; i++)
         {
             if (objectsToEnable[i] != null)
@@ -94,9 +97,5 @@ public class SmartDialogAction : MonoBehaviour
                 objectsToEnable[i].SetActive(enabled == 1);
             }
         }
-
-       
-
-       
     }
 }

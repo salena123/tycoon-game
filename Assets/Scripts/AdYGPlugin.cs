@@ -156,7 +156,7 @@ public class AdsYGPlugin : MonoBehaviour
 
     private IEnumerator DelayedBindAdTrigger()
     {
-        yield return new WaitForSeconds(1.9f);
+        yield return new WaitForSeconds(1f);
 
         if (noAd == null)
         {

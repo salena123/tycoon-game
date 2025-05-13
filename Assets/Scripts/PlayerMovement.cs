@@ -4,70 +4,123 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+    [Header("Movement")]
+    public float moveSpeed = 5f;
+    public float acceleration = 10f;
     public float rotationSpeed = 720f;
-    public float jumpForce = 7f;               // Сила прыжка
+
+    [Header("Jumping")]
+    public float jumpForce = 7f;
+    public float jumpCooldown = 2f;
+    private float lastJumpTime = -Mathf.Infinity;
+
+    [Header("Ground Check")]
+    public Transform groundCheckPoint;
+    public float groundCheckDistance = 0.2f;
+    public LayerMask groundMask;
+
+    [Header("Camera")]
     public Transform cameraTransform;
-    public LayerMask groundMask;               // Для проверки земли
-    public float groundCheckDistance = 0.2f;   // Расстояние для проверки земли
-    public Transform groundCheckPoint;         // Точка, откуда проверяем землю
-    public float jumpCooldown = 2f;  // Задержка между прыжками
-    private float lastJumpTime = -Mathf.Infinity; // Время последнего прыжка
+
     private Rigidbody rb;
+    private Animator animator;
+
+    private bool jumpQueued = false;
+
     private bool isGrounded;
+    private Vector3 currentVelocity;
+    private Vector3 smoothMoveVelocity;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        rb.freezeRotation = true;
     }
 
     void Update()
     {
-        MovePlayer();
         HandleJump();
     }
 
-    void MovePlayer()
+    void FixedUpdate()
+    {
+        Move();
+    }
+
+    void Move()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 inputDirection = new Vector3(horizontal, 0, vertical).normalized;
+        Vector3 inputDir = new Vector3(horizontal, 0, vertical).normalized;
 
-        if (inputDirection.magnitude > 0.1f)
+        // Поворачиваемся к направлению движения
+        if (inputDir.magnitude >= 0.1f)
         {
-            Vector3 cameraForward = cameraTransform.forward;
-            Vector3 cameraRight = cameraTransform.right;
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
+            camForward.y = 0f;
+            camRight.y = 0f;
 
-            cameraForward.y = 0f;
-            cameraRight.y = 0f;
-            cameraForward.Normalize();
-            cameraRight.Normalize();
+            camForward.Normalize();
+            camRight.Normalize();
 
-            Vector3 moveDirection = cameraForward * inputDirection.z + cameraRight * inputDirection.x;
+            Vector3 moveDir = camForward * inputDir.z + camRight * inputDir.x;
 
-            Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
 
-            Vector3 move = moveDirection * speed;
-            Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
-            rb.velocity = velocity;
+            // Ускорение и замедление
+            Vector3 targetVelocity = moveDir * moveSpeed;
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref smoothMoveVelocity, 0.1f);
+
+            rb.MovePosition(rb.position + currentVelocity * Time.fixedDeltaTime);
+
+            // Анимации
+            animator.SetInteger("move", Input.GetKey(KeyCode.LeftShift) ? 2 : 1); // 2 — бег, 1 — ходьба
+            animator.SetFloat("speed", Input.GetKey(KeyCode.LeftShift) ? 1f : 0.5f); // скорость анимации
         }
         else
         {
-            rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+            // Остановка
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, Vector3.zero, ref smoothMoveVelocity, 0.1f);
+            rb.MovePosition(rb.position + currentVelocity * Time.fixedDeltaTime);
+
+            // Анимации
+            animator.SetInteger("move", 0); // 0 — idle
+            animator.SetFloat("speed", 1f);
         }
+
+        // Поворот головы в зависимости от A/D
+        if (Input.GetKey(KeyCode.A))
+            animator.SetInteger("head_turn", 1); // влево
+        else if (Input.GetKey(KeyCode.D))
+            animator.SetInteger("head_turn", 2); // вправо
+        else
+            animator.SetInteger("head_turn", 0); // прямо
     }
 
     void HandleJump()
     {
         isGrounded = Physics.CheckSphere(groundCheckPoint.position, groundCheckDistance, groundMask);
 
-        // Проверка: на земле и прошло достаточно времени с последнего прыжка
         if (isGrounded && Input.GetButtonDown("Jump") && Time.time >= lastJumpTime + jumpCooldown)
         {
+            lastJumpTime = Time.time;
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            lastJumpTime = Time.time; // обновляем время последнего прыжка
+            animator.SetTrigger("jump");
         }
+    }
+
+    // Этот метод вызывается из ивента анимации Jump
+    public void DoJump()
+    {
+        if (!isGrounded) return;
+
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); // сбрасываем Y
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        jumpQueued = false;
     }
 }

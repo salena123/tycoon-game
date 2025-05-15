@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class MoneyCollectorTerminal : MonoBehaviour
 {
-    public MoneyDropZone[] dropZones; // список всех зон
+    public MoneyDropZone[] dropZones;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            int totalCollected = 0;
+            int totalCoconuts = 0;
 
             foreach (MoneyDropZone zone in dropZones)
             {
-                totalCollected += zone.moneyInZone;
+                totalCoconuts += zone.moneyInZone;
                 zone.moneyInZone = 0;
             }
 
-            MoneyManager.AddMoney(totalCollected); // сохраняем сумму
+            CoconutManager.AddCoconuts(totalCoconuts); // сохраняем как кокосы
         }
     }
 }

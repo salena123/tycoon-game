@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1069ccbc242bbb4da889970cfe66b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectPrefab: {fileID: 3096052899817179945, guid: 38e1ad42bd948b144916d867da961004, type: 3}
+  objectPrefab: {fileID: 6564023949445370892, guid: 34f30d4777d19614d8d37761dfe098cd, type: 3}
   spawnInterval: 2
   spawnPoint: {fileID: 3605380996006854299}
 --- !u!1 &5233281232659501272

@@ -4,42 +4,25 @@ using UnityEngine;
 
 public class ButtonManager : MonoBehaviour
 {
-    public bool pressed = false;
-    public GameObject buildingForSpawn;
-    public GameObject sprite;
-    public int price;
-    void Start()
-    {
-        
-    }
+    public GameObject ItemForSpawn;
+    public GameObject spawnContainer;
 
-    void Update()
+    public void Spawning()
     {
-        
-    }
-
-    public void Spawning(Collision collision)
-    {
-        
-        if (collision.relativeVelocity.y < -1)
+        foreach (Transform child in spawnContainer.transform)
         {
-            if (MoneyManager.money >= price) //(MoneyManager.money >= item1.price)
-            {
-                Vector3 spawningPosition = new Vector3(2, 2, 2);
-                Instantiate(buildingForSpawn, spawningPosition, Quaternion.identity);
-                sprite.transform.localScale = new Vector3(sprite.transform.localScale.x, 0.15f, sprite.transform.localScale.z);
-                pressed = true;
-                MoneyManager.money = MoneyManager.money - price;
-            }
-
+            Destroy(child.gameObject);
         }
+        Vector3 spawningPosition = new Vector3(9f, 0.12f, 55.32f);
+        GameObject spawnedItem = Instantiate(ItemForSpawn, spawningPosition, Quaternion.identity, spawnContainer.transform);
+
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (!pressed)
+        if (other.CompareTag("Player"))
         {
-            Spawning(collision);
+            Spawning();
         }
     }
 }

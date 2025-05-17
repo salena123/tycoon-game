@@ -52,7 +52,6 @@ public class MeshAnimator : MonoBehaviour
             }
 
             meshFilter.mesh = meshes[currentFrame];
-            Debug.Log($" Показывается кадр: {meshes[currentFrame].name}");
         }
     }
 }

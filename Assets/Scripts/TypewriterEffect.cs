@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TypewriterEffect : MonoBehaviour
 {
     public float delay = 0.05f; // задержка между символами
-    public Text uiText;         // если используешь TMP, замени на TMP_Text
+    public TMP_Text uiText;         // если используешь TMP, замени на TMP_Text
 
     [HideInInspector]
     public bool IsFinished { get; private set; } = false;

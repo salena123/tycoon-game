@@ -15,7 +15,6 @@ public class PaidActivationZone : MonoBehaviour
     public ActivationStage[] stages; // 3 стадии
     public TMP_Text costTextUI;
     public string activationID = "ActivationZone_1";
-    public bool isConveuor;
 
     private int currentStage = 0;
 
@@ -71,14 +70,7 @@ public class PaidActivationZone : MonoBehaviour
 
         if (currentStage >= stages.Length)
         {
-            if(!isConveuor)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                costTextUI.text = "Все активировано";
-            }
+            costTextUI.text = "Все активировано";
         }
         else
         {

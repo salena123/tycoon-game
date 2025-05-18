@@ -28,7 +28,9 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
+        Debug.Log("все собралось");
         finishTrigger.SetActive(true);
         triggered = true;
+        //Destroy(gameObject);
     }
 }
